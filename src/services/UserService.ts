@@ -1,22 +1,32 @@
+import { User } from '../types/User';
+
 const db = [
   {
     name: 'livia',
     email: 'livia@email.com',
+    id: '1',
   },
 ];
 
 export class UserService {
-  createUser(name: string, email: string) {
-    const user = {
-      name,
-      email,
-    };
+  db: User[];
 
-    db.push(user);
-    console.log('db atualizado', db);
+  constructor(database = db) {
+    this.db = database;
   }
 
-  getAllUsers() {
-    return db;
-  }
+  createUser = (user: User) => {
+    this.db.push(user);
+    console.log('db atualizado', this.db);
+  };
+
+  getAllUsers = () => {
+    return this.db;
+  };
+
+  deleteUser = (uid: string) => {
+    this.db = this.db.filter(user => user.id !== uid);
+
+    console.log('usuario deletado', this.db);
+  };
 }
