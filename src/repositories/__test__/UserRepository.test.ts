@@ -8,20 +8,23 @@ describe('UserRepository', () => {
   let manageMock: Partial<EntityManager>;
 
   const mockuser: User = {
-    user_id: '1234',
+    id_user: '1234',
     name: 'ana',
     email: 'ana@email.com',
     password: 'password',
   };
 
   beforeAll(async () => {
-    manageMock = await getMockEntityManager({});
+    manageMock = await getMockEntityManager({
+      saveReturn: mockuser,
+    });
     userRepository = new UserRepository(manageMock as EntityManager);
   });
 
   it('Deve cadastrar o usuario no banco de dados', async () => {
-    await userRepository.createUser(mockuser);
+    const response = await userRepository.createUser(mockuser);
 
     expect(manageMock.save).toHaveBeenCalled();
+    expect(response).toMatchObject(mockuser);
   });
 });

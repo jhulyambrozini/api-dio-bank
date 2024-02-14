@@ -8,46 +8,42 @@ export class UserController {
     this.userService = userService;
   }
 
-  createUser = (request: Request, response: Response) => {
+  createUser = async (request: Request, response: Response) => {
     const user = request.body;
 
-    if (!user.name) {
-      return response.status(400).json({ message: 'Nome obrigatório' });
-    }
-
-    if (!user.email) {
-      return response.status(400).json({ message: 'Email obrigatório' });
-    }
-
-    const userData = {
-      name: user.name,
-      email: user.email,
-      id: crypto.randomUUID(),
-    };
-
-    console.log(this.userService);
-
-    this.userService.createUser(userData);
-
-    return response.status(201).json({ message: 'usuario criado' });
-  };
-
-  getAllUsers = (request: Request, response: Response) => {
-    const users = this.userService.getAllUsers();
-
-    if (!users) {
+    if (!user.name || !user.email || !user.password) {
       return response
-        .status(404)
-        .json({ message: 'Nenhum usuário encontrado' });
+        .status(400)
+        .json({ message: 'Todos os campos são obrigatórios' });
     }
 
-    return response.status(200).json(users);
+    const newUser = await this.userService.createUser(
+      user.name,
+      user.email,
+      user.password
+    );
+
+    response.status(201).json({
+      message: 'Usuário criado com sucesso',
+      user: newUser, // Supondo que 'newUser' seja o objeto do usuário criado
+    });
   };
 
-  deleteUser = (request: Request, response: Response) => {
+  getUser = async (request: Request, response: Response) => {
+    const { uid } = request.params;
+    const user = await this.userService.getUser(uid);
+
+    if (!user) {
+      return response.status(404).json({ message: 'Usuário não encontrado' });
+    }
+
+    return response.status(200).json(user);
+  };
+
+  deleteUser = async (request: Request, response: Response) => {
     const { uid } = request.params;
 
-    this.userService.deleteUser(uid);
+    await this.userService.deleteUser(uid);
 
     return response.status(200).json({ message: 'usuario deletado' });
   };

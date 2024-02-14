@@ -1,32 +1,27 @@
-import { User } from '../types/User';
-
-const db = [
-  {
-    name: 'livia',
-    email: 'livia@email.com',
-    id: '1',
-  },
-];
+import { AppDataSource } from '../database';
+import { User } from '../entities/User';
+import { UserRepository } from '../repositories/UserRepository';
 
 export class UserService {
-  db: User[];
+  private userRepository: UserRepository;
 
-  constructor(database = db) {
-    this.db = database;
+  constructor(userRepository = new UserRepository(AppDataSource.manager)) {
+    this.userRepository = userRepository;
   }
-
-  createUser = (user: User) => {
-    this.db.push(user);
-    console.log('db atualizado', this.db);
+  createUser = (
+    name: string,
+    email: string,
+    password: string
+  ): Promise<User> => {
+    const user = new User(name, email, password);
+    return this.userRepository.createUser(user);
   };
 
-  getAllUsers = () => {
-    return this.db;
+  getUser = (id_user: string): Promise<User | null> => {
+    return this.userRepository.getUser(id_user);
   };
 
-  deleteUser = (uid: string) => {
-    this.db = this.db.filter(user => user.id !== uid);
-
-    console.log('usuario deletado', this.db);
+  deleteUser = (id_user: string): Promise<User | null> => {
+    return this.userRepository.deleteUser(id_user);
   };
 }

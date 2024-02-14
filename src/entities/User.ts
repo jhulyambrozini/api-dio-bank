@@ -2,8 +2,8 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')
 export class User {
-  @PrimaryGeneratedColumn()
-  user_id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id_user: string;
 
   @Column({ nullable: false })
   name: string;
@@ -15,7 +15,7 @@ export class User {
   password: string;
 
   constructor(name: string, email: string, password: string) {
-    this.user_id = crypto.randomUUID();
+    this.id_user = crypto.randomUUID();
     this.name = name;
     this.email = email;
     this.password = password;
