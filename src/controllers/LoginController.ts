@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+
 import { UserService } from '../services/UserService';
 
 export class LoginController {
@@ -10,10 +11,6 @@ export class LoginController {
 
   login = async (request: Request, response: Response) => {
     const { email, password } = request.body;
-
-    if (!email || !password) {
-      return;
-    }
 
     try {
       const token = await this.userService.getToken(email, password);

@@ -8,14 +8,12 @@ export class UserRepository {
     return this.manager.save(user);
   };
 
-  getUser = async (userId: string): Promise<User | null> => {
-    const user = await this.manager.findOne(User, {
+  getUser = async (id_user: string): Promise<User | null> => {
+    return this.manager.findOne(User, {
       where: {
-        id_user: userId,
+        id_user,
       },
     });
-
-    return user;
   };
 
   getUserByEmailAndPassword = async (
@@ -30,10 +28,10 @@ export class UserRepository {
     });
   };
 
-  deleteUser = async (userId: string): Promise<User | null> => {
+  deleteUser = async (id_user: string): Promise<User | null> => {
     const user = await this.manager.findOne(User, {
       where: {
-        id_user: userId,
+        id_user,
       },
     });
 

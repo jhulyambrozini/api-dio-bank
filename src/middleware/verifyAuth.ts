@@ -12,7 +12,7 @@ export function verifyAuth(
     const [, token] = authToken.split(' ');
 
     try {
-      const { sub } = verify(token, '1234567');
+      verify(token, '1234567');
       return next();
     } catch (error) {
       return response.status(401).json({ message: 'Unauthorized' });

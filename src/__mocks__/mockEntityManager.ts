@@ -3,10 +3,12 @@ import { EntityManager } from 'typeorm';
 interface MockManegerArgs {
   saveReturn?: object | [object];
   findOneReturn?: object;
+  removereturn?: object;
 }
 export const getMockEntityManager = async ({
   saveReturn = undefined,
   findOneReturn = undefined,
+  removereturn = undefined,
 }: MockManegerArgs): Promise<EntityManager> => {
   const manager: Partial<EntityManager> = {};
 
@@ -17,6 +19,10 @@ export const getMockEntityManager = async ({
   manager.findOne = jest
     .fn()
     .mockImplementation(() => Promise.resolve(findOneReturn));
+
+  manager.remove = jest
+    .fn()
+    .mockImplementation(() => Promise.resolve(removereturn));
 
   return manager as EntityManager;
 };

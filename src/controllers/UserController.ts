@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+
 import { UserService } from '../services/UserService';
 
 export class UserController {
@@ -47,8 +48,12 @@ export class UserController {
   deleteUser = async (request: Request, response: Response) => {
     const { uid } = request.params;
 
-    await this.userService.deleteUser(uid);
+    try {
+      await this.userService.deleteUser(uid);
 
-    return response.status(200).json({ message: 'usuario deletado' });
+      return response.status(200).json({ message: 'usuario deletado' });
+    } catch (error) {
+      return response.status(404).json({ message: 'usuario não cadastrado' });
+    }
   };
 }
