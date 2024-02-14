@@ -1,10 +1,8 @@
 import { UserController } from '../UserController';
 
-import {
-  MockResponse,
-  makeMockResponse,
-} from '../../__mocks__/mockResponse.mock';
-import { Request } from 'express';
+import { makeMockResponse } from '../../__mocks__/mockResponse.mock';
+import { Request, response } from 'express';
+import { makeMockRequest } from '../../__mocks__/mockRequest.mock';
 
 const mockUserService = {
   createUser: jest.fn(),
@@ -22,10 +20,26 @@ jest.mock('../../services/UserService', () => {
 
 describe('UserController', () => {
   const userController = new UserController();
+  const mockResponse = makeMockResponse();
+
+  it('Should create an user', async () => {
+    const mockRequest = {
+      body: {
+        name: 'ana',
+        email: 'ana@email.com',
+        password: '1234',
+      },
+    } as Request;
+
+    await userController.createUser(mockRequest, mockResponse);
+
+    expect(mockResponse.state.json).toMatchObject({
+      message: 'Usuário criado com sucesso',
+    });
+    expect(mockResponse.state.status).toBe(201);
+  });
 
   it('Should retun an error when dont send an email', () => {
-    const mockResponse = makeMockResponse();
-
     const mockRequest = {
       body: {
         name: 'ana',
@@ -43,8 +57,6 @@ describe('UserController', () => {
   });
 
   it('Should retun an error when dont send a name', () => {
-    const mockResponse = makeMockResponse();
-
     const mockRequest = {
       body: {
         name: '',
@@ -62,8 +74,6 @@ describe('UserController', () => {
   });
 
   it('Should retun an error when dont send a password', () => {
-    const mockResponse = makeMockResponse();
-
     const mockRequest = {
       body: {
         name: 'ana',
@@ -80,6 +90,19 @@ describe('UserController', () => {
     });
   });
 
+  it('Should retornar o usuario com o id_user informado', async () => {
+    const mockRequest = makeMockRequest({
+      params: {
+        uid: '123456',
+      },
+    }) as Request;
+
+    await userController.getUser(mockRequest, mockResponse);
+
+    expect(mockUserService.getUser).toHaveBeenCalledWith('123456');
+    expect(mockResponse.state.status).toBe(200);
+  });
+
   it('Should delete an user', async () => {
     const mockResponse = makeMockResponse();
 
@@ -88,6 +111,7 @@ describe('UserController', () => {
     } as unknown as Request;
 
     await userController.deleteUser(mockRequest, mockResponse);
+    console.log(mockResponse);
 
     expect(mockResponse.state.status).toBe(200);
     expect(mockResponse.state.json).toMatchObject({

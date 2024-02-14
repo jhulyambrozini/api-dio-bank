@@ -17,15 +17,15 @@ export class UserController {
         .json({ message: 'Todos os campos são obrigatórios' });
     }
 
-    const newUser = await this.userService.createUser(
+    const newuser = await this.userService.createUser(
       user.name,
       user.email,
       user.password
     );
 
-    response.status(201).json({
+    return response.status(201).json({
       message: 'Usuário criado com sucesso',
-      user: newUser, // Supondo que 'newUser' seja o objeto do usuário criado
+      id_user: newuser.id_user,
     });
   };
 
@@ -34,10 +34,14 @@ export class UserController {
     const user = await this.userService.getUser(uid);
 
     if (!user) {
-      return response.status(404).json({ message: 'Usuário não encontrado' });
+      return response.status(404).json({ message: 'usuario não cadastrado' });
     }
 
-    return response.status(200).json(user);
+    return response.status(200).json({
+      id_user: user?.id_user,
+      name: user?.name,
+      email: user?.email,
+    });
   };
 
   deleteUser = async (request: Request, response: Response) => {

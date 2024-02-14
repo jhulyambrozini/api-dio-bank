@@ -2,7 +2,7 @@ import { Response } from 'express';
 
 export type MockResponse<TResult> = Response & {
   state: {
-    status?: number;
+    status: number;
     json?: TResult | unknown;
   };
 };

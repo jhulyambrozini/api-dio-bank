@@ -18,6 +18,18 @@ export class UserRepository {
     return user;
   };
 
+  getUserByEmailAndPassword = async (
+    email: string,
+    password: string
+  ): Promise<User | null> => {
+    return this.manager.findOne(User, {
+      where: {
+        email,
+        password,
+      },
+    });
+  };
+
   deleteUser = async (userId: string): Promise<User | null> => {
     const user = await this.manager.findOne(User, {
       where: {
